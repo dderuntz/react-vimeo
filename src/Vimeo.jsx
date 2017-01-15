@@ -81,19 +81,21 @@ export default React.createClass({
   },
 
   getInitialState() {
+    var thumb = (this.props.thumbnail != null)? this.props.thumbnail: null;
     return {
-      imageLoaded: (this.props.thumbnail == null)? false: true,
+      imageLoaded: (thumb != null),
       playerOrigin: '*',
       showingVideo: this.props.autoplay,
-      thumb: this.props.thumbnail
+      thumb: thumb
     };
   },
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.videoId !== this.props.videoId) {
+      var thumb = (this.props.thumbnail != null)? this.props.thumbnail: null;
       this.setState({
-        thumb: this.props.thumbnail,
-        imageLoaded: (this.props.thumbnail == null)? false: true,
+        thumb: thumb,
+        imageLoaded: (thumb != null),
         showingVideo: false
       });
     }
