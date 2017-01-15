@@ -48,6 +48,8 @@ export default React.createClass({
     playButton: PropTypes.node,
     playerOptions: PropTypes.object,
     videoId: PropTypes.string.isRequired,
+    thumbnail: PropTypes.string,
+    hideOnStop: PropTypes.bool,
 
     // event callbacks
     onCueChange: PropTypes.func,
@@ -80,18 +82,18 @@ export default React.createClass({
 
   getInitialState() {
     return {
-      imageLoaded: false,
+      imageLoaded: (this.props.thumbnail == null)? false: true,
       playerOrigin: '*',
       showingVideo: this.props.autoplay,
-      thumb: null
+      thumb: this.props.thumbnail
     };
   },
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.videoId !== this.props.videoId) {
       this.setState({
-        thumb: null,
-        imageLoaded: false,
+        thumb: this.props.thumbnail,
+        imageLoaded: (this.props.thumbnail == null)? false: true,
         showingVideo: false
       });
     }
@@ -151,7 +153,6 @@ export default React.createClass({
         data = { event: '' };
       }
     }
-
     if (data.event === 'ready') {
       const { player } = this.refs;
       debug('player ready');
@@ -160,6 +161,10 @@ export default React.createClass({
         playerOrigin === '*' ? origin : playerOrigin
       );
       return onReady(data);
+    }
+    if (data.event === 'ended') {
+      debug('player ended');
+      this.onEnded();
     }
     if (!data.event) {
       // we get messages when the first event callbacks are added to the frame
@@ -182,7 +187,10 @@ export default React.createClass({
       }
     });
   },
-
+  
+  onEnded() {
+    if (this.props.hideOnStop) this.setState({ showingVideo: false });
+  },
   playVideo(e) {
     e.preventDefault();
     this.setState({ showingVideo: true });
