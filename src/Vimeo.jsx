@@ -81,9 +81,10 @@ export default React.createClass({
   },
 
   getInitialState() {
-    var thumb = (this.props.thumbnail != null)? this.props.thumbnail: null;
+    var thumb = (this.props.thumbnail != undefined)? this.props.thumbnail: null;
+    var hasThumb = (thumb != null);
     return {
-      imageLoaded: (thumb != null),
+      imageLoaded: hasThumb,
       playerOrigin: '*',
       showingVideo: this.props.autoplay,
       thumb: thumb
@@ -92,10 +93,11 @@ export default React.createClass({
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.videoId !== this.props.videoId) {
-      var thumb = (this.props.thumbnail != null)? this.props.thumbnail: null;
+      var thumb = (this.props.thumbnail != undefined)? this.props.thumbnail: null;
+      var hasThumb = (thumb != null);
       this.setState({
         thumb: thumb,
-        imageLoaded: (thumb != null),
+        imageLoaded: hasThumb,
         showingVideo: false
       });
     }
